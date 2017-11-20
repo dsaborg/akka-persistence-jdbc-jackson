@@ -24,13 +24,14 @@ name := "akka-persistence-jdbc-jackson"
 
 organization := "org.d2ab"
 
-version := "1.0.0-SNAPSHOT"
+version := "1.0.1"
 
 scalaVersion := "2.12.4"
 
+resolvers += Resolver.mavenLocal
+
 libraryDependencies ++= {
   val akkaVersion = "2.5.6"
-  val jacksonVersion = "2.9.2"
   val slickPgVersion = "0.15.4"
   val json4sVersion = "3.5.3"
   Seq(
@@ -40,13 +41,10 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-persistence" % akkaVersion,
     "com.typesafe.akka" %% "akka-cluster" % akkaVersion,
     "com.typesafe.akka" %% "akka-cluster-sharding" % akkaVersion,
-    "com.github.dnvriend" %% "akka-persistence-jdbc" % "3.0.1",
+    "com.github.dnvriend" %% "akka-persistence-jdbc" % "3.0.1-ORDERING",
     "com.github.tminglei" %% "slick-pg" % slickPgVersion,
     "com.github.tminglei" %% "slick-pg_json4s" % slickPgVersion,
-    "org.json4s" %% "json4s-native" % json4sVersion,
-    "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
-    "com.fasterxml.jackson.module" % "jackson-module-parameter-names" % jacksonVersion,
-    "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % jacksonVersion
+    "org.json4s" %% "json4s-native" % json4sVersion
   )
 }
 

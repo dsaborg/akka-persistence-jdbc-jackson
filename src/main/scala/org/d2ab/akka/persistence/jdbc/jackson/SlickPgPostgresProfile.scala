@@ -31,7 +31,7 @@
   See: https://github.com/tminglei/slick-pg
  */
 
-package org.d2ab.akka.persistence.jdbc.jackson.dao
+package org.d2ab.akka.persistence.jdbc.jackson
 
 import com.github.tminglei.slickpg._
 import org.json4s.JsonMethods

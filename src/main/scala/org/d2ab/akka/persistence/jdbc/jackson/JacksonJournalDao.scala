@@ -20,7 +20,7 @@
   See: https://github.com/dnvriend/akka-persistence-jdbc
  */
 
-package org.d2ab.akka.persistence.jdbc.jackson.dao
+package org.d2ab.akka.persistence.jdbc.jackson
 
 import akka.NotUsed
 import akka.persistence.jdbc.config._
@@ -36,8 +36,10 @@ import scala.collection.immutable._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 import scala.util.Try
 
-class JacksonJournalDao(val db: Database, val profile: JdbcProfile, val journalConfig: JournalConfig, serialization: Serialization)(implicit val ec: ExecutionContext, val mat: Materializer) extends JournalDao {
-  val queries = new JacksonJournalQueries(profile.asInstanceOf[SlickPgPostgresProfile], journalConfig.journalTableConfiguration)
+class JacksonJournalDao(val db: Database, val jdbcProfile: JdbcProfile, val journalConfig: JournalConfig, serialization: Serialization)(implicit val ec: ExecutionContext, val mat: Materializer) extends JournalDao {
+  private val profile = jdbcProfile.asInstanceOf[SlickPgPostgresProfile]
+
+  val queries = new JacksonJournalQueries(profile, journalConfig.journalTableConfiguration)
   val serializer = new JacksonJournalSerializer(serialization, journalConfig.pluginConfig.tagSeparator)
 
   import journalConfig.daoConfig.{batchSize, bufferSize, parallelism}

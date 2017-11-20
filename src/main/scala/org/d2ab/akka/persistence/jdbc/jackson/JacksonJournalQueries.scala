@@ -20,23 +20,23 @@
   See: https://github.com/dnvriend/akka-persistence-jdbc
  */
 
-package org.d2ab.akka.persistence.jdbc.jackson.dao
+package org.d2ab.akka.persistence.jdbc.jackson
 
 import akka.persistence.jdbc.config.JournalTableConfiguration
 
 class JacksonJournalQueries(val profile: SlickPgPostgresProfile, override val journalTableCfg: JournalTableConfiguration) extends JacksonJournalTables {
   import profile.api._
 
-  private val JournalTableC = Compiled(JournalTable)
+  private val JournalTableC = Compiled(JacksonJournalTable)
 
   def writeJournalRows(xs: Seq[JacksonJournalRow]) =
     JournalTableC ++= xs.sortBy(_.sequenceNumber)
 
   private def selectAllJournalForPersistenceId(persistenceId: Rep[String]) =
-    JournalTable.filter(_.persistenceId === persistenceId).sortBy(_.sequenceNumber.desc)
+    JacksonJournalTable.filter(_.persistenceId === persistenceId).sortBy(_.sequenceNumber.desc)
 
   def markJournalMessagesAsDeleted(persistenceId: String, maxSequenceNr: Long) =
-    JournalTable
+    JacksonJournalTable
       .filter(_.persistenceId === persistenceId)
       .filter(_.sequenceNumber <= maxSequenceNr)
       .filter(_.deleted === false)
@@ -53,17 +53,17 @@ class JacksonJournalQueries(val profile: SlickPgPostgresProfile, override val jo
   val selectByPersistenceIdAndMaxSequenceNumber = Compiled(_selectByPersistenceIdAndMaxSequenceNumber _)
 
   private def _allPersistenceIdsDistinct: Query[Rep[String], String, Seq] =
-    JournalTable.map(_.persistenceId).distinct
+    JacksonJournalTable.map(_.persistenceId).distinct
 
   val allPersistenceIdsDistinct = Compiled(_allPersistenceIdsDistinct)
 
   def journalRowByPersistenceIds(persistenceIds: Iterable[String]): Query[Rep[String], String, Seq] = for {
-    query <- JournalTable.map(_.persistenceId)
+    query <- JacksonJournalTable.map(_.persistenceId)
     if query inSetBind persistenceIds
   } yield query
 
   private def _messagesQuery(persistenceId: Rep[String], fromSequenceNr: Rep[Long], toSequenceNr: Rep[Long], max: ConstColumn[Long]) =
-    JournalTable
+    JacksonJournalTable
       .filter(_.persistenceId === persistenceId)
       .filter(_.deleted === false)
       .filter(_.sequenceNumber >= fromSequenceNr)

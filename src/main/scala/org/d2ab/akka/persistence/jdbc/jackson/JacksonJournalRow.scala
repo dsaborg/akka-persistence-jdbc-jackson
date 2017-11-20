@@ -20,9 +20,11 @@
   See: https://github.com/dnvriend/akka-persistence-jdbc
  */
 
-package org.d2ab.akka.persistence.jdbc.jackson.dao
+package org.d2ab.akka.persistence.jdbc.jackson
 
+import akka.persistence.jdbc.OrderedJournalRow
 import org.json4s.JValue
 
 final case class JacksonJournalRow(ordering: Long, deleted: Boolean, persistenceId: String, sequenceNumber: Long,
-                                   payload: JValue, manifest: String, writerUuid: String, tags: Option[String] = None)
+                                   payload: JValue, identifier: Int, manifest: String, writerUuid: String,
+                                   sender: Option[Array[Byte]], tags: Option[String] = None) extends OrderedJournalRow
